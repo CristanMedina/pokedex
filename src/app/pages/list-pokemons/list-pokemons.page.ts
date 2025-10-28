@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, LoadingController, IonGrid, IonCard, IonCardContent, IonRow, IonCol, IonImg, IonText, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent } from '@ionic/angular/standalone';
 import { PokemonService } from '../../services/pokemon';
 import { PokemonInterface } from 'src/app/interfaces/pokemon';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list-pokemons',
@@ -17,10 +18,15 @@ export class ListPokemonsPage {
 
   private pokemonService: PokemonService = inject(PokemonService);
 
+  private loadingCtrl: LoadingController = inject(LoadingController);
+
+  private router: Router = inject(Router)
+
+
   pokemons: PokemonInterface[] = [];
 
 
-  constructor(private loadingCtrl: LoadingController) { }
+  constructor() { }
 
   ionViewWillEnter(){
     this.getMorePokemons();
@@ -49,6 +55,10 @@ export class ListPokemonsPage {
             event?.target.complete()
         })
     }
+  }
+
+  goToPage(pokemon: PokemonInterface){
+    this.router.navigate(['pokemon-detail', pokemon.id]);
   }
 
 }

@@ -58,7 +58,7 @@ export class ListPokemonsPage {
   }
 
   goToPage(pokemon: PokemonInterface){
-    this.router.navigate(['pokemon-detail', pokemon.id]);
+    this.router.navigate(['detail-pokemon', pokemon.id]);
   }
 
 }

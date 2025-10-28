@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, LoadingController } from '@ionic/angular/standalone';
 import { PokemonService } from '../../services/pokemon';
 import { PokemonInterface } from 'src/app/interfaces/pokemon';
 
@@ -19,18 +19,31 @@ export class ListPokemonsPage {
 
   pokemons: PokemonInterface[] = [];
 
-  constructor() { }
+
+  constructor(private loadingCtrl: LoadingController) { }
 
   ionViewWillEnter(){
     this.getMorePokemons();
   }
 
-  getMorePokemons(){
+  async getMorePokemons(){
     const promisePokemons = this.pokemonService.getPokemons();
 
     if(promisePokemons){
+        const loading = await this.loadingCtrl.create({
+            message: 'Cargando...',
+            spinner: 'dots',
+            duration: 2000
+        })
+        loading.present();
+
+
         promisePokemons.then(( pokemons: PokemonInterface[] ) => {
             this.pokemons = this.pokemons.concat(pokemons);
+        })
+        .catch((error) => console.log(error))
+        .finally(() => {
+            loading.dismiss()
         })
     }
   }

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, LoadingController } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, LoadingController, IonGrid, IonCard, IonCardContent, IonRow, IonCol, IonImg, IonText, IonInfiniteScroll, IonInfiniteScrollContent, InfiniteScrollCustomEvent } from '@ionic/angular/standalone';
 import { PokemonService } from '../../services/pokemon';
 import { PokemonInterface } from 'src/app/interfaces/pokemon';
 
@@ -10,7 +10,7 @@ import { PokemonInterface } from 'src/app/interfaces/pokemon';
   templateUrl: './list-pokemons.page.html',
   styleUrls: ['./list-pokemons.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, JsonPipe]
+  imports: [IonInfiniteScrollContent, IonInfiniteScroll, IonText, IonImg, IonCol, IonRow, IonCardContent, IonCard, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonGrid]
 })
 export class ListPokemonsPage {
 
@@ -26,24 +26,27 @@ export class ListPokemonsPage {
     this.getMorePokemons();
   }
 
-  async getMorePokemons(){
+  async getMorePokemons(event?: InfiniteScrollCustomEvent){
     const promisePokemons = this.pokemonService.getPokemons();
 
     if(promisePokemons){
-        const loading = await this.loadingCtrl.create({
+        let loading: any;
+        if(!event){
+            const loading = await this.loadingCtrl.create({
             message: 'Cargando...',
             spinner: 'dots',
             duration: 2000
         })
         loading.present();
-
+        }
 
         promisePokemons.then(( pokemons: PokemonInterface[] ) => {
             this.pokemons = this.pokemons.concat(pokemons);
         })
         .catch((error) => console.log(error))
         .finally(() => {
-            loading.dismiss()
+            loading?.dismiss();
+            event?.target.complete()
         })
     }
   }

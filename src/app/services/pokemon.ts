@@ -81,11 +81,11 @@ export class PokemonService {
     }
 
     getPokemon(id: number){
-        const ruta = `{this.URL_BASE}/${id}`;
+        const ruta = `${this.URL_BASE}/${id}`;
         return CapacitorHttp.get({
             url: ruta,
             params: {}
         })
-        .then((resp: HttpResponse) => this.processPokemon(resp.data))
+        .then( (resp: HttpResponse) => this.processPokemon(resp.data) )
     }
 }
